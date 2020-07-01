@@ -1,0 +1,105 @@
+.rectanguloValvulas
+{
+	background-color: white;
+	height: 130px; 
+	width: 100px;
+	position: relative;
+	float: left;
+	
+	margin-left: 20px;
+	margin-top: 20px;
+	border: 2px outset #999;
+	border-radius: 5px 5px 5px 5px;
+
+	text-align: center;
+}
+
+.valvulaRectAbierto
+{
+	background-color: #27D420;
+}
+
+.valvulaRectCerrada
+{
+	background-color: #FF5050;
+}
+
+.valvulaRectAbierto, .valvulaRectCerrada
+{
+	width: 100%;
+	height: 100%;
+}
+
+.sensorRect
+{
+	background-color: #F9D558;
+	padding-top: 4%;
+}
+.sensorRect
+{
+	width: 100%;
+	height: 96%;
+}
+
+.textoInferior
+{
+	font-size: 80%;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	border-top: 1px solid #79A0C5;
+}
+
+.textoSuperior
+{
+	background-color: cyan;	
+	margin: 0 auto;
+	width: 80%;
+	height: 25px;
+	border: 1px solid #79A0C5;
+	font-size: 130%;
+}
+
+.texto3er
+{
+	background-color: #D198E2;	
+	margin: 0 auto;
+	width: 80%;
+}
+
+.texto4to
+{	
+	margin: 0 auto;
+	width: 80%;
+
+}
+
+.rectOn
+{
+}
+
+.rectMedio
+{
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.rectOff
+{
+}
+
+.rectOn, .rectMedio, .rectOff
+{
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 5px;
+}
+
+.botonAccionado
+{
+	width: 15px;
+	height: 13px;
+	border: 1px inset white;
+	background-color: #DDD;
+	float: right;
+}

@@ -1,0 +1,68 @@
+div#botonesGrafica
+{
+	font-size: 80%;
+	/*min-width: 700px;*/
+	height: 100px;
+}
+
+div#botonesGrafica div
+{
+	padding: 2px;
+	margin-top: 15px;
+	margin-left: 20px;
+	border: 0;
+	background-color: #EEE;
+	float: left;	
+	cursor: pointer;
+	border: 1px solid #EEE;
+}
+div#botonesGrafica div:hover
+{
+	background-color: #E0EEEE;
+	border: 1px solid #93cede;
+}
+
+.letraBotonesG
+{
+	margin: 0;
+}
+#icoGuardarG, #icoEliminarG, #icoGuardarImagenG, #icoPdfG, #icoPunteroG, #icoManoG, #icoAcercarG,
+#icoAlejarG
+{
+	margin: 0 auto;
+	background-size: 100% 100%;
+    width: 30px;
+    height: 30px;
+}
+#icoGuardarG
+{
+	background-image: url("../img/guardar.png");
+}
+#icoEliminarG
+{
+	background-image: url("../img/eliminarG.png");
+}
+#icoGuardarImagenG
+{
+	background-image: url("../img/guardarImagen.png");
+}
+#icoPdfG
+{
+	background-image: url("../img/pdf.png");
+}
+#icoPunteroG
+{
+	background-image: url("../img/puntero.png");
+}
+#icoManoG
+{
+	background-image: url("../img/mano.png");
+}
+#icoAcercarG
+{
+	background-image: url("../img/acercar6.png");
+}
+#icoAlejarG
+{
+	background-image: url("../img/alejar6.png");
+}

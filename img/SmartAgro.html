@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://localhost/smartAgro/proyecto/app/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>SmartAgro</title>
+	<link rel="icon" href="http://localhost/smartAgro/proyecto/img/icono.png">
+
+	<link rel="stylesheet" type="text/css" href="./SmartAgro_files/estiloGeneral.css">
+	<link rel="stylesheet" type="text/css" href="./SmartAgro_files/mapa.css">
+	<link rel="stylesheet" type="text/css" href="./SmartAgro_files/infoDispositivo.css">
+	<link rel="stylesheet" type="text/css" href="./SmartAgro_files/botonesGrafica.css">
+
+	<link rel="stylesheet" type="text/css" href="./SmartAgro_files/switchValvula.css">
+
+	<script src="./SmartAgro_files/jquery.min.js"></script>
+	<script src="./SmartAgro_files/Chart.js"></script>
+
+	<script src="./SmartAgro_files/graficos.js"></script>
+	<script src="./SmartAgro_files/seleccionarMenu.js"></script>
+	<script src="./SmartAgro_files/desplegarSubMenu.js"></script>
+	<script src="./SmartAgro_files/moverSeparador.js"></script>
+	<script src="./SmartAgro_files/todoSVGCampo.js"></script>
+	<script>
+
+var idTipoObjeto=1;//Campos=1, Campo=2, Valvula=3, Sensor=4, OtrosDispositivos=5, 
+				   //NCoordinadores=6, NCoordinador=7, NRuteadores=8, NRuteador=9, 
+				   //Cultivos=10, Cultivo=11
+var ultimoIdObjeto=0;//id de campo, valvula, sensor, NC, NR,...
+var tipoMenu=1; //Mapa=1, Graficos=2, Propiedades=3
+
+/*------------------Camposss--------------------*/
+
+function getCampos () 
+{
+	idTipoObjeto=1;
+	habilitarMP () ;
+
+	if(flechaDCampo == false)
+	{
+		clicFlechaC();
+	}
+		
+	if (tipoMenu==1)
+	{
+		getCamposMapa ();
+	}
+	else if (tipoMenu==2)
+	{
+		getCamposMapa (); 
+		seleccionarMenu(1);
+	}
+	else if (tipoMenu==3)
+	{
+		getCamposPropiedades () ;
+	}
+}
+
+function getCamposMapa () 
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	adaptarSVG();    	   	
+	    }
+	};
+	//desdeJava para verificar desde donde es llamado getCampos
+	xhttp.open("GET", "campos/getCamposMapa.php?desdeJava="+1, true);
+	xhttp.send();
+}
+
+function getCamposPropiedades () 
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	   	   	
+	    }
+	};
+	xhttp.open("GET", "campos/getCamposPropiedades.php", true);
+	xhttp.send();
+}
+
+
+
+
+
+
+/*------------------Campo------------------------*/
+function mostrarUnCampo(idCam)
+{ 		
+	if(edit=="false")
+	{
+		idTipoObjeto=2;
+		ultimoIdObjeto = idCam;
+		habilitarMP () ;
+
+		flechaDCampo = false;
+		clicFlechaC();
+		clicFlechaCs(idCam);
+		if (tipoMenu==1)
+		{		
+			mostrarUnCampoPropiedades(idCam);
+			seleccionarMenu(3);
+		}
+		else if (tipoMenu==2)
+		{	
+			mostrarUnCampoPropiedades(idCam);
+			seleccionarMenu(3);		
+		}
+		else if (tipoMenu==3)
+		{
+			mostrarUnCampoPropiedades(idCam);
+		}
+	}
+	
+}
+
+function mostrarUnCampoPropiedades(idCam)
+{ 
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;  
+	    }
+	};
+	xhttp.open("GET", "campo/getUnCampoPropiedades.php?idCam="+idCam, true);
+	xhttp.send();
+}
+
+/*------------------Valvulas------------------------*/
+function mostrarUnaValvula(idVal)
+{ 				
+	if(edit=="false")
+	{
+		idTipoObjeto=3;
+		ultimoIdObjeto = idVal;
+		habilitarMP () ;
+
+		if (tipoMenu==1)
+		{		
+			mostrarUnaValvulaPropiedades(idVal);
+			seleccionarMenu(3);
+		}
+		else if (tipoMenu==2)
+		{			
+			mostrarUnaValvulaGrafica(idVal);
+		}
+		else if (tipoMenu==3)
+		{
+			mostrarUnaValvulaPropiedades(idVal);
+		}
+		
+	}
+	
+}
+function mostrarUnaValvulaGrafica(idVal)
+{
+	document.getElementById("idComponente").value = idVal;
+	document.getElementById("tipoComponente").value = idTipoObjeto;
+
+	var ancho = window.innerWidth;
+	var alto = window.innerHeight;
+
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;
+	    	xhttp2.onreadystatechange = function() 
+			{
+			    if (xhttp2.readyState == 4 && xhttp2.status == 200) 
+			    {
+			    	var validar = xhttp2.responseText;
+			    	graficarV(validar);
+			    }
+			};
+			xhttp2.open("GET", "valvula/getUnaValvulaGrafica.php?idVal="+idVal, true);
+			xhttp2.send();
+	    }
+	};
+	xhttp.open("GET", "valvula/getUnaValvulaGraficaMenu.php?idVal="+idVal+"&anchoV="+ancho+"&altoV="+alto, true);
+	xhttp.send();		
+}
+
+function mostrarUnaValvulaPropiedades(idVal)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar; 
+	    }
+	};
+	xhttp.open("GET", "valvula/getUnaValvulaPropiedades.php?idVal="+idVal, true);
+	xhttp.send();
+}
+
+/*------------------Sensor------------------------*/
+function mostrarUnNodoTerminal(idNodTer)
+{ 					
+	if(edit=="false")
+	{
+		idTipoObjeto=4;
+		ultimoIdObjeto = idNodTer;
+		habilitarMP () ;
+
+		if (tipoMenu==1)
+		{		
+			mostrarUnNodoTerminalPropiedades(idNodTer);
+			seleccionarMenu(3);
+		}
+		else if (tipoMenu==2)
+		{			
+			mostrarUnNodoTerminalGrafica(idNodTer);
+		}
+		else if (tipoMenu==3)
+		{
+			mostrarUnNodoTerminalPropiedades(idNodTer);
+		}
+		
+	}	
+}
+
+var ultimoNTG = -1;
+function mostrarUnNodoTerminalGrafica(idNodTer)
+{	
+	document.getElementById("idComponente").value = idNodTer;
+	document.getElementById("tipoComponente").value = idTipoObjeto;
+	var ancho = window.innerWidth;
+	var alto = window.innerHeight;
+	console.log(alto);
+	// para repetidor, evitar q funcione click en el mismo
+	/*if(ultimoNTG == idNodTer)
+	{
+		console.log("Salio:"+ultimoNTG+":"+idNodTer);
+		return;
+	}
+	else
+	{
+		console.log("Entro:"+ultimoNTG+":"+idNodTer);
+		ultimoNTG = idNodTer;
+	}*/
+
+//se va a repetir en elegirRepetidor(), pero necesario para q cambie rapido sin esperar al timer
+	var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	var f=new Date();
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;
+	    	xhttp2.onreadystatechange = function() 
+			{
+			    if (xhttp2.readyState == 4 && xhttp2.status == 200) 
+			    {
+			    	var validar2 = xhttp2.responseText;
+			    	graficarNT(validar2,"Hoy: "+ f.getDate() + " de " + meses[f.getMonth()] + " de " + f.getFullYear());
+			    }
+			};
+			xhttp2.open("GET", "nodoTerminal/getUnNodoTerminalGrafica.php?idNodTer="+idNodTer, true);
+			xhttp2.send();
+	    }
+	};
+	xhttp.open("GET", "nodoTerminal/getUnNodoTerminalGraficaMenu.php?idNodTer="+idNodTer+"&anchoV="+ancho+"&altoV="+alto, true);
+	xhttp.send();		
+}
+
+function mostrarUnNodoTerminalPropiedades(idNodTer)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;  
+	    }
+	};
+	xhttp.open("GET", "nodoTerminal/getUnNodoTerminalPropiedades.php?idNodTer="+idNodTer, true);
+	xhttp.send();
+}
+
+/*------------------Otros Dispostivos--------------------*/
+
+function getODispositivos() 
+{
+	idTipoObjeto=5;
+	habilitarMP () ;
+
+	if(flechaDODispositivos == false)
+	{
+		clicFlechaOD();
+	}
+		
+	if (tipoMenu==1)
+	{
+		getOtrosDispositivosPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{
+		getOtrosDispositivosPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==3)
+	{
+		getOtrosDispositivosPropiedades () ;
+	}
+}
+
+function getOtrosDispositivosPropiedades () 
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	   	   	
+	    }
+	};
+	xhttp.open("GET", "otrosDispositivos/getODPropiedades.php", true);
+	xhttp.send();
+}
+
+/*------------------Nodos Ruteadores--------------------*/
+
+function getCoordinadores()
+{
+	idTipoObjeto=6;
+	habilitarMP () ;
+
+	if(flechaDNCoordinadores == false)
+	{
+		clicFlechaNCs();
+	}
+		
+	if (tipoMenu==1)
+	{
+		getNodosCoordinadoresPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{
+		getNodosCoordinadoresPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==3)
+	{
+		getNodosCoordinadoresPropiedades () ;
+	}
+}
+
+function getNodosCoordinadoresPropiedades () 
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	   	   	
+	    }
+	};
+	xhttp.open("GET", "nodosCoordinadores/getNCsPropiedades.php", true);
+	xhttp.send();
+}
+
+
+/*------------------Un Nodo Ruteador--------------------*/
+function mostrarUnNodoCoordinador(idNC)
+{ 				
+	idTipoObjeto=7;
+	ultimoIdObjeto = idNC;
+	habilitarMP () ;
+
+	if (tipoMenu==1)
+	{		
+		mostrarUnNodoCoordinadorPropiedades(idNC);
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{			
+		mostrarUnNodoCoordinadorGrafica(idNC);
+	}
+	else if (tipoMenu==3)
+	{
+		mostrarUnNodoCoordinadorPropiedades(idNC);
+	}		
+}
+function mostrarUnNodoCoordinadorGrafica(idNC)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;
+	    	xhttp2.onreadystatechange = function() 
+			{
+			    if (xhttp2.readyState == 4 && xhttp2.status == 200) 
+			    {
+			    	var validar = xhttp2.responseText;
+			    	graficarV(validar);
+			    }
+			};
+			xhttp2.open("GET", "nodoCoordinador/getUnNodoCoordinadorGrafica.php?idNC="+idNC, true);
+			xhttp2.send();
+	    }
+	};
+	xhttp.open("GET", "nodoCoordinador/getUnNodoCoordinadorMenu.php?idNC="+idNC, true);
+	xhttp.send();		
+}
+
+function mostrarUnNodoCoordinadorPropiedades(idNC)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar; 
+	    }
+	};
+	xhttp.open("GET", "nodoCoordinador/getUnNodoCoordinadorPropiedades.php?idNC="+idNC, true);
+	xhttp.send();
+}
+
+
+/*------------------Nodos Ruteadores--------------------*/
+
+function getRuteadores()
+{
+	idTipoObjeto=8;
+	habilitarMP () ;
+
+	if(flechaDNRuteadores == false)
+	{
+		clicFlechaNRs()
+	}
+		
+	if (tipoMenu==1)
+	{
+		getNodosRuteadoresPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{
+		getNodosRuteadoresPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==3)
+	{
+		getNodosRuteadoresPropiedades () ;
+	}
+}
+
+function getNodosRuteadoresPropiedades () 
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	   	   	
+	    }
+	};
+	xhttp.open("GET", "nodosRuteadores/getNRsPropiedades.php", true);
+	xhttp.send();
+}
+
+/*------------------Un Nodo Ruteador--------------------*/
+function mostrarUnNodoRuteador(idNR)
+{ 				
+	idTipoObjeto=9;
+	ultimoIdObjeto = idNR;
+	habilitarMP () ;
+
+	if (tipoMenu==1)
+	{		
+		mostrarUnNodoRuteadorPropiedades(idNR);
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{			
+		mostrarUnNodoRuteadorGrafica(idNR);
+	}
+	else if (tipoMenu==3)
+	{
+		mostrarUnNodoRuteadorPropiedades(idNR);
+	}		
+}
+function mostrarUnNodoRuteadorGrafica(idNR)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar;
+	    	xhttp2.onreadystatechange = function() 
+			{
+			    if (xhttp2.readyState == 4 && xhttp2.status == 200) 
+			    {
+			    	var validar = xhttp2.responseText;
+			    	graficarV(validar);
+			    }
+			};
+			xhttp2.open("GET", "nodoRuteador/getUnNodoRuteadorGrafica.php?idNR="+idNR, true);
+			xhttp2.send();
+	    }
+	};
+	xhttp.open("GET", "nodoRuteador/getUnNodoRuteadorMenu.php?idNR="+idNR, true);
+	xhttp.send();		
+}
+
+function mostrarUnNodoRuteadorPropiedades(idNR)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar; 
+	    }
+	};
+	xhttp.open("GET", "nodoRuteador/getUnNodoRuteadorPropiedades.php?idNR="+idNR, true);
+	xhttp.send();
+}
+
+/*------------------Cultivosss--------------------*/
+
+function getCultivos() 
+{
+	idTipoObjeto=10;
+	habilitarMP () ;
+
+	if(flechaCultivos == false)
+	{
+		clicFlechaCultivos();
+	}
+		
+	if (tipoMenu==1)
+	{
+		getCultivosPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{
+		getCultivosPropiedades (); 
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==3)
+	{
+		getCultivosPropiedades (); 
+	}
+}
+
+function getCultivosPropiedades ()
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;	
+	    	document.getElementById('cuerpo').innerHTML = validar; 	
+	    	   	   	
+	    }
+	};
+	xhttp.open("GET", "cultivos/getCultivosPropiedades.php", true);
+	xhttp.send();
+}
+
+/*------------------Un Cultivo--------------------*/
+function mostrarUnCultivo(idCul)
+{ 				
+	idTipoObjeto=11;
+	ultimoIdObjeto = idCul;
+	habilitarMP () ;
+
+	if (tipoMenu==1)
+	{		
+		mostrarUnCultivoPropiedades(idCul);
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==2)
+	{			
+		mostrarUnCultivoPropiedades(idCul);
+		seleccionarMenu(3);
+	}
+	else if (tipoMenu==3)
+	{
+		mostrarUnCultivoPropiedades(idCul);
+	}		
+}
+
+function mostrarUnCultivoPropiedades(idCul)
+{
+	xhttp.onreadystatechange = function() 
+	{
+	    if (xhttp.readyState == 4 && xhttp.status == 200) 
+	    {
+	    	var validar = xhttp.responseText;
+	    	document.getElementById("cuerpo").innerHTML = validar; 
+	    }
+	};
+	xhttp.open("GET", "cultivo/getUnCultivoPropiedades.php?idCul="+idCul, true);
+	xhttp.send();
+}
+/*---------------Habilitar y deshabilitar menu principal---*/
+function habilitarMP () 
+{
+	//Campos=1, Campo=2, Valvula=3, Sensor=4, OtrosDispositivos=5, 
+	//NCoordinadores=6, NCoordinador=7, NRuteadores=8, NRuteador=9
+
+	//Esta seleccionado Mapa
+	if (idTipoObjeto==1)
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado unCampo
+	else if (idTipoObjeto==2) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado una valvula
+	else if (idTipoObjeto==3)
+	{
+		document.getElementById("m2").disabled = false;
+		document.getElementById("m2").style.cursor = 'pointer';
+	}
+	//Esta seleccionado un sensor
+	else if (idTipoObjeto==4) 
+	{
+		document.getElementById("m2").disabled = false;
+		document.getElementById("m2").style.cursor = 'pointer';
+	}
+	//Esta seleccionado otros dispositivos
+	else if (idTipoObjeto==5) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado nodos coordinadores
+	else if (idTipoObjeto==6) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado un nodo coordinador
+	else if (idTipoObjeto==7) 
+	{
+		document.getElementById("m2").disabled = false;
+		document.getElementById("m2").style.cursor = 'pointer';
+	}
+	//Esta seleccionado nodos ruteadores
+	else if (idTipoObjeto==8) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado un nodo ruteador
+	else if (idTipoObjeto==9) 
+	{
+		document.getElementById("m2").disabled = false;
+		document.getElementById("m2").style.cursor = 'pointer';
+	}
+	//Esta seleccionado cultivos
+	else if (idTipoObjeto==10) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+	//Esta seleccionado un cultivo
+	else if (idTipoObjeto==11) 
+	{
+		document.getElementById("m2").disabled = true;
+		document.getElementById("m2").style.cursor = 'not-allowed';
+	}
+}
+
+/*---------------------Funciones del menu-------------------*/
+function getMapa () 
+{
+	//Siempre mostrara todo el mapa
+	idTipoObjeto=1;
+	habilitarMP () ;
+	getCamposMapa();
+}
+function getGraficas () 
+{
+	//Esta seleccionado Mapa
+	if (idTipoObjeto==1)
+	{	//nada
+	}
+	//Esta seleccionado unCampo
+	else if (idTipoObjeto==2) 
+	{	//nada
+	}
+	//Esta seleccionado una valvula
+	else if (idTipoObjeto==3)
+	{	
+		mostrarUnaValvulaGrafica(ultimoIdObjeto);
+	}
+	//Esta seleccionado un sensor
+	else if (idTipoObjeto==4) 
+	{
+		mostrarUnNodoTerminalGrafica(ultimoIdObjeto);
+	}
+	//Esta seleccionado otros dispositivos
+	else if (idTipoObjeto==5) 
+	{
+		//nada
+	}
+	//Esta seleccionado Nodos Coordinadores
+	else if (idTipoObjeto==6) 
+	{
+		//nada
+	}
+	//Esta seleccionado un Nodo Coordinador
+	else if (idTipoObjeto==7) 
+	{
+		mostrarUnNodoCoordinadorGrafica(ultimoIdObjeto);
+	}
+	//Esta seleccionado Nodos Ruteadores
+	else if (idTipoObjeto==8) 
+	{
+		//nada
+	}
+	//Esta seleccionado un Nodo Ruteador
+	else if (idTipoObjeto==9) 
+	{
+		mostrarUnNodoRuteadorGrafica(ultimoIdObjeto);
+	}
+	//Esta seleccionado Cultivos
+	else if (idTipoObjeto==10) 
+	{
+		//nada
+	}
+	//Esta seleccionado un Cultivo
+	else if (idTipoObjeto==11) 
+	{
+		//nada
+	}
+}
+function getPropiedades () 
+{
+	//Esta seleccionado Mapa
+	if (idTipoObjeto==1)
+	{
+		habilitarMP () 
+		getCamposPropiedades ();
+	}
+	//Esta seleccionado unCampo
+	else if (idTipoObjeto==2) 
+	{
+		mostrarUnCampoPropiedades(ultimoIdObjeto);
+	}
+	//Esta seleccionado una valvula
+	else if (idTipoObjeto==3)
+	{
+		mostrarUnaValvulaPropiedades(ultimoIdObjeto);
+	}
+	//Esta seleccionado un sensor
+	else if (idTipoObjeto==4) 
+	{
+		mostrarUnNodoTerminalPropiedades(ultimoIdObjeto);
+	}
+	//Esta seleccionado Otros Dispositivos
+	else if (idTipoObjeto==5) 
+	{
+		getOtrosDispositivosPropiedades ();
+	}
+	//Esta seleccionado Nodos Coordinadores
+	else if (idTipoObjeto==6) 
+	{
+		getNodosCoordinadoresPropiedades ();
+	}
+	//Esta seleccionado un Nodo Coordinador
+	else if (idTipoObjeto==7) 
+	{
+		getUnNodoCoordinadorPropiedades (ultimoIdObjeto);
+	}
+	//Esta seleccionado Nodos Ruteadores
+	else if (idTipoObjeto==8) 
+	{
+		getNodosRuteadoresPropiedades ();
+	}
+	//Esta seleccionado un Nodo Ruteador
+	else if (idTipoObjeto==9) 
+	{
+		getUnNodoRuteadorPropiedades (ultimoIdObjeto);
+	}
+	//Esta seleccionado Cultivos
+	else if (idTipoObjeto==10) 
+	{
+		getCultivosPropiedades (ultimoIdObjeto);
+	}
+	//Esta seleccionado un Cultivo
+	else if (idTipoObjeto==11) 
+	{
+		getUnCultivoPropiedades (ultimoIdObjeto);
+	}
+}
+
+</script>
+	<script src="./SmartAgro_files/funcionesCampos.js"></script>
+	<script src="./SmartAgro_files/funcionesCampo.js"></script>
+	<script src="./SmartAgro_files/funcionesCultivos.js"></script>
+	<script src="./SmartAgro_files/funcionesCultivo.js"></script>
+	<script src="./SmartAgro_files/funcionesNodosCor.js"></script>
+	<script src="./SmartAgro_files/funcionesUnNodCoo.js"></script>
+	<script src="./SmartAgro_files/funcionesNodosRut.js"></script>
+	<script src="./SmartAgro_files/funcionesUnNodRut.js"></script>
+	<script src="./SmartAgro_files/funcionesValvula.js"></script>
+	<script src="./SmartAgro_files/funcionesNodoTer.js"></script>
+
+	<script src="./SmartAgro_files/funcionesMapa.js"></script>
+
+	<!--Para capturar pantalla en imagen-->
+	<script type="text/javascript" src="./SmartAgro_files/html2canvas.js"></script>
+	<script type="text/javascript" src="./SmartAgro_files/jquery.plugin.html2canvas.js"></script>
+	
+	
+
+	
+</head>
+<body onload="adaptarSVG(), seleccionarMenu(1)" onresize="adaptarSVG()">
+<header>
+	<div onclick="location.reload();" id="imgLogo" style="cursor: pointer;"></div>
+
+<div id="imgAlertasContenedor" onclick="clickAlertas()" style="cursor: pointer;">
+<div id="imgAlertas"></div><span id="numAlertas">2</span>	
+	
+</div>
+
+<div id="imgConfProgramadasContenedor" style="cursor: pointer;" "="">
+<div id="imgConfProgramadas"></div><span id="numConfProgramadas">10</span>	
+	
+</div>
+
+
+<nav id="menuPrincipal">
+	<ul>
+		<li>
+			<a href="http://localhost/smartAgro/proyecto/app/#">
+				<button id="m1" onclick="getMapa(), seleccionarMenu(1)" style="background: linear-gradient(rgb(192, 240, 224) 0%, rgb(174, 207, 194) 50%, rgb(147, 199, 179) 51%, rgb(174, 217, 200) 100%);">
+					<span id="icoMapa"></span><span class="textoMP">Mapa</span>
+				</button>
+			</a>
+		</li>
+		<li>
+			<a href="http://localhost/smartAgro/proyecto/app/#">
+				<button id="m2" onclick="getGraficas(), seleccionarMenu(2)" style="cursor: not-allowed; background: linear-gradient(rgb(247, 244, 247) 0%, rgb(219, 219, 219) 45%, rgb(209, 209, 209) 55%, rgb(226, 226, 226) 100%);" disabled="">
+					<span id="icoGraficos"></span><span class="textoMP">Gráficos</span>
+				</button>
+			</a>
+		</li>
+		<li>
+			<a href="http://localhost/smartAgro/proyecto/app/#">
+				<button id="m3" onclick="getPropiedades(), seleccionarMenu(3)" style="background: linear-gradient(rgb(247, 244, 247) 0%, rgb(219, 219, 219) 45%, rgb(209, 209, 209) 55%, rgb(226, 226, 226) 100%);">
+					<span id="icoPropiedades"></span><span class="textoMP">Propiedades</span>
+				</button>
+			</a>
+		</li>
+	</ul>
+</nav>
+</header>
+
+<aside id="menuIzqueirda">
+	<nav id="menuSecundario">
+<!--------------Primer desplegable------------>
+	<p class="parrafoC" style="margin-top:16px;">
+		<span onclick="clicFlechaC()" id="icoEstadoC"></span>
+		<span onclick="getCampos()" class="icoCampos"></span>
+		<span onclick="getCampos()" class="textoSM">Campos</span>
+	</p>
+	<div id="divCs">
+<p class="parrafoCs">
+		        	<span onclick="clicFlechaCs(2)" id="icoEstadoCs2" class="icoEstadoCs"></span>
+		        	<span onclick="mostrarUnCampo(2)" class="icoCampo"></span>
+		        	<span onclick="mostrarUnCampo(2)" class="textoSM">Campo de Zanahoria - Zanahoria</span>
+		        </p><div id="divV2"><p class="parrafoV">
+					    		<span class="icoEstadoV"></span>
+					    		<span onclick="mostrarUnaValvula(5)" class="icoValvula"></span>
+					    		<span onclick="mostrarUnaValvula(5)" class="textoSM">Válvula Superior</span>
+					    	</p><p class="parrafoS">
+					    		<span class="icoEstadoS"></span>
+					    		<span onclick="mostrarUnNodoTerminal(1)" class="icoSensor"></span>
+					    		<span onclick="mostrarUnNodoTerminal(1)" class="textoSM">Sensor1</span>
+					    	</p></div><p class="parrafoCs">
+		        	<span onclick="clicFlechaCs(3)" id="icoEstadoCs3" class="icoEstadoCs"></span>
+		        	<span onclick="mostrarUnCampo(3)" class="icoCampo"></span>
+		        	<span onclick="mostrarUnCampo(3)" class="textoSM">Campo Zanahoria2 - Zanahoria</span>
+		        </p><div id="divV3"><p class="parrafoV">
+					    		<span class="icoEstadoV"></span>
+					    		<span onclick="mostrarUnaValvula(6)" class="icoValvula"></span>
+					    		<span onclick="mostrarUnaValvula(6)" class="textoSM">Valvula2</span>
+					    	</p><p class="parrafoS">
+					    		<span class="icoEstadoS"></span>
+					    		<span onclick="mostrarUnNodoTerminal(2)" class="icoSensor"></span>
+					    		<span onclick="mostrarUnNodoTerminal(2)" class="textoSM">Sensor2</span>
+					    	</p></div><p class="parrafoCs">
+		        	<span onclick="clicFlechaCs(4)" id="icoEstadoCs4" class="icoEstadoCs"></span>
+		        	<span onclick="mostrarUnCampo(4)" class="icoCampo"></span>
+		        	<span onclick="mostrarUnCampo(4)" class="textoSM">Campo Zapallo - Zapallo</span>
+		        </p><div id="divV4"><p class="parrafoV">
+					    		<span class="icoEstadoV"></span>
+					    		<span onclick="mostrarUnaValvula(7)" class="icoValvula"></span>
+					    		<span onclick="mostrarUnaValvula(7)" class="textoSM">Valvula 3</span>
+					    	</p><p class="parrafoS">
+					    		<span class="icoEstadoS"></span>
+					    		<span onclick="mostrarUnNodoTerminal(3)" class="icoSensor"></span>
+					    		<span onclick="mostrarUnNodoTerminal(3)" class="textoSM">Sensor3</span>
+					    	</p></div><p class="parrafoCs">
+		        	<span onclick="clicFlechaCs(5)" id="icoEstadoCs5" class="icoEstadoCs"></span>
+		        	<span onclick="mostrarUnCampo(5)" class="icoCampo"></span>
+		        	<span onclick="mostrarUnCampo(5)" class="textoSM">Campo Zapallo2 - Zapallo</span>
+		        </p><div id="divV5"><p class="parrafoV">
+					    		<span class="icoEstadoV"></span>
+					    		<span onclick="mostrarUnaValvula(8)" class="icoValvula"></span>
+					    		<span onclick="mostrarUnaValvula(8)" class="textoSM">Valvula 4</span>
+					    	</p><p class="parrafoS">
+					    		<span class="icoEstadoS"></span>
+					    		<span onclick="mostrarUnNodoTerminal(4)" class="icoSensor"></span>
+					    		<span onclick="mostrarUnNodoTerminal(4)" class="textoSM">Sensor4</span>
+					    	</p></div><p class="parrafoCs">
+		        	<span onclick="clicFlechaCs(6)" id="icoEstadoCs6" class="icoEstadoCs"></span>
+		        	<span onclick="mostrarUnCampo(6)" class="icoCampo"></span>
+		        	<span onclick="mostrarUnCampo(6)" class="textoSM">Vacio - Sin Cultivo</span>
+		        </p><div id="divV6"></div>	</div>	
+
+
+<!--------------Segundo desplegable------------>
+
+
+	<p class="parrafoOD" style="margin-top:16px;">
+		<span onclick="clicFlechaOD()" id="icoEstadoOD"></span>
+		<span onclick="getODispositivos()" class="icoODispositivos"></span>
+		<span onclick="getODispositivos()" class="textoSM">Otros Dispositivos</span>
+	</p>
+	<div id="divOD">
+
+		<p class="parrafoNCs" style="margin-top:16px;">
+		<span onclick="clicFlechaNCs()" id="icoEstadoNCs"></span>
+		<span onclick="getCoordinadores()" class="icoCoordinadores"></span>
+		<span onclick="getCoordinadores()" class="textoSM">Nodos Coordinadores</span>
+		</p>
+
+		<div id="divNC">
+<p class="parrafoNC">
+					    		<span class="icoEstadoNC"></span>
+					    		<span onclick="mostrarUnNodoCoordinador(1)" class="icoNCoordinador"></span>
+					    		<span onclick="mostrarUnNodoCoordinador(1)" class="textoSM">Coordinador 1</span>
+					    	</p>		</div>			
+
+		<p class="parrafoNRs" style="margin-top:16px;">
+		<span onclick="clicFlechaNRs()" id="icoEstadoNRs"></span>
+		<span onclick="getRuteadores()" class="icoRuteadores"></span>
+		<span onclick="getRuteadores()" class="textoSM">Nodos Ruteadores</span>
+		</p>
+
+		<div id="divNR">
+<p class="parrafoNR">
+					    		<span class="icoEstadoNR"></span>
+					    		<span onclick="mostrarUnNodoRuteador(2)" class="icoNRuteador"></span>
+					    		<span onclick="mostrarUnNodoRuteador(2)" class="textoSM">2-1236</span>
+					    	</p></div>	</div>	
+
+<!--------------Tercer desplegable------------>
+
+	<p class="parrafoCultivos" style="margin-top:16px;">
+		<span onclick="clicFlechaCultivos()" id="icoEstadoCultivos"></span>
+		<span onclick="getCultivos()" class="icoCultivos"></span>
+		<span onclick="getCultivos()" class="textoSM">Productos Cultivables</span>
+	</p>
+
+	<div id="divCultivos">
+<p class="parrafoCultivo">
+			    		<span class="icoEstadoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(8)" class="icoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(8)" class="textoSM">Papa</span>
+			    	</p><p class="parrafoCultivo">
+			    		<span class="icoEstadoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(2)" class="icoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(2)" class="textoSM">Zanahoria</span>
+			    	</p><p class="parrafoCultivo">
+			    		<span class="icoEstadoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(3)" class="icoCultivo"></span>
+			    		<span onclick="mostrarUnCultivo(3)" class="textoSM">Zapallo</span>
+			    	</p>	
+	</div>	
+</nav></aside>
+<section id="separador" onmousedown="mouseDownSeparador()"></section>
+
+<!--Necesario para utilizar la funcion de generar captura de panta del canvas-->
+<form method="POST" enctype="multipart/form-data" action="http://localhost/smartAgro/proyecto/app/exportarDocumentos/save.php" id="myForm" target="_blank">
+	<input type="hidden" name="img_val" id="img_val" value="">
+	<input type="hidden" name="idComponente" id="idComponente" value="">
+	<input type="hidden" name="tipoComponente" id="tipoComponente" value="">
+	<input type="hidden" name="tipoGuardado" id="tipoGuardado" value="">
+</form>
+<!---->
+
+<section id="cuerpo"><p class="franja" style="text-align: center;">Alertas</p><div id="botonesPropiedades"><p style="color: #D00;">Se recomienda resolver estas "2" alertas en su brevedad. <br>Cuidemos nuestros cultivos!!!</p></div><div style="width: 100%; float: left;"><p class="franja">Campos con exceso de agua</p><img src="./SmartAgro_files/cultivoInundado.jpg" class="imgAlertas"><table class="tablaAlerta"><tbody><tr><td>Campo</td><td><input type="text" value="Campo Zapallo2" disabled=""></td></tr><tr><td>Cultivo</td><td><input type="text" value="Zapallo" disabled=""></td></tr><tr><td>Humedad del Campo</td><td><input type="number" value="120" disabled=""></td></tr><tr><td>Humedad Máxima</td><td><input type="number" value="68" disabled=""></td></tr></tbody></table><br></div><div style="width: 100%; float: left;"><p class="franja">Campos con exceso de agua</p><img src="./SmartAgro_files/cultivoSeco.jpg" class="imgAlertas"><table class="tablaAlerta"><tbody><tr><td>Campo</td><td><input type="text" value="Campo de Zanahoria" disabled=""></td></tr><tr><td>Cultivo</td><td><input type="text" value="Zanahoria" disabled=""></td></tr><tr><td>Humedad del Campo</td><td><input type="number" value="0" disabled=""></td></tr><tr><td>Humedad Mínima</td><td><input type="number" value="5" disabled=""></td></tr></tbody></table><br></div><p class="franja"></p></section>
+
+
+
+
+
+
+<script>
+	var xhttp;
+	if (window.XMLHttpRequest) 
+	{
+	    xhttp = new XMLHttpRequest();
+	} 
+	else 
+	{
+	    // code for IE6, IE5
+	    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	var xhttp2;
+	if (window.XMLHttpRequest) 
+	{
+	    xhttp2 = new XMLHttpRequest();
+	} 
+	else 
+	{
+	    // code for IE6, IE5
+	    xhttp2 = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+</script>
+
+<!--Funcion para capturar la grafica de canvas-->
+<script>
+	function capture(opcion) 
+	{
+		document.getElementById("tipoGuardado").value = opcion;
+		$('#capturaPantalla').html2canvas(
+		{
+			onrendered: function (canvas) 
+			{
+                //Set hidden field's value to image data (base-64 string)
+				$('#img_val').val(canvas.toDataURL("image/jpeg"));
+                //Submit the form manually
+				document.getElementById("myForm").submit();
+			}
+		});
+	}
+</script>
+</body></html>

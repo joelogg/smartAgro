@@ -1,0 +1,82 @@
+
+/*800px de ancho a lo vertical*/
+/*1130px de ancho a lo horizontal*/
+html
+{    
+}
+body
+{
+    margin: 0;
+    padding: 50px;
+    background-color: #FFF;
+}
+
+/*-----------------Cabecera------------------*/
+img.logo
+{
+    width: 200px;
+    height: 80px;
+}
+
+/*------------------Cuerpo General-------------------*/
+table.tablaPDF
+{
+    width: 100%;
+    text-align: justify;
+    border-collapse: collapse;
+}
+.tablaPDF th, .tablaPDF td {
+    /*border: 1px solid black;*/
+}
+.tablaPDF .subRayado
+{
+    border-bottom: 1px solid #999;
+}
+.tablaPDF .sobreRayado
+{
+    border-top: 1px solid #999;
+}
+.tablaPDF .alinearDerecha
+{
+    text-align: right;
+}
+.tablaPDF .alinearCentro
+{
+    text-align: center;
+}
+.tablaPDF .espaciado
+{
+    height: 10px;
+}
+
+table.tablaInformacion 
+{
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 98%;
+}
+
+.tablaInformacion th, .tablaInformacion td {
+    border: 1px solid black;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+table.tablaInformacionV 
+{
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: auto;
+}
+
+.tablaInformacionV th, .tablaInformacionV td {
+    border: 1px solid black;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+img#grafica
+{
+    max-width: 650px;
+    margin: 0 auto;
+    text-align: center;
+}

@@ -1,0 +1,239 @@
+svg, #imgMapa
+{
+	width: 100%;
+	margin-left: 0%;
+	height: 99%;
+}
+svg
+{
+	position:absolute;
+	z-index: 0;
+}
+polygon.polygonCampoAtras
+{
+	fill:#FFF;
+	fill-opacity:0;
+
+}
+polygon.polygonCampoNormal
+{
+	fill:#00BFFF;
+	stroke:#0404B4;
+	stroke-width:2;
+	fill-opacity:0.3;
+	stroke-opacity:0.6
+}
+polygon.polygonCampoNormal:hover
+{
+	fill-opacity:0.4;
+	stroke-opacity:0.9
+}
+polygon.polygonCampoAlerta
+{
+	fill:#FF4545;
+	stroke:#851111;
+	stroke-width:2;
+	fill-opacity:0.4;
+	stroke-opacity:0.7
+}
+polygon.polygonCampoAlerta:hover
+{
+	fill-opacity:0.5;
+	stroke-opacity:0.9
+}
+polygon.polygonCampoVacio
+{
+	fill:#BDBDBD;
+	stroke:#BDBDBD;
+	stroke-width:2;
+	fill-opacity:0.4;
+	stroke-opacity:0.7
+}
+polygon.polygonCampoVacio:hover
+{
+	fill-opacity:0.5;
+	stroke-opacity:0.9
+}
+
+#imgMapa
+{
+	z-index: 1;
+}
+#mapa
+{
+	height: 100%;
+}
+/*-------Informacion de dispositivos cuando se hace click-----*/
+div.rectSensorInf
+{
+	background:white; 	
+}
+div.rectValvulaInf
+{
+	background:yellow; 
+}
+div.rectSensorInf, div.rectValvulaInf
+{
+	color: black;
+	position: absolute;
+	opacity:0;
+	border: 1px solid black;
+	border-radius: 5px;
+	overflow: hidden;
+	width: 0;
+	height: 0;
+}
+
+/*-------Iconos valvula y sensor ()---------------*/
+circle.rectSensor
+{
+	fill:#D0FA58;
+	stroke:black;
+	stroke-width:1;
+	fill-opacity:0.7;
+	stroke-opacity:0.9;
+	cursor:pointer;
+}
+polygon.rectValvulaAbierta
+{
+	fill:#2BB833;	
+	stroke:#3F7642;
+	stroke-width:4;
+	fill-opacity:0.5;
+	stroke-opacity:0.9;
+	cursor:pointer;
+}
+polygon.rectValvulaCerrada
+{
+	fill: #DD2121;
+	stroke: #DF0101;
+	stroke-width:4;
+	fill-opacity:0.5;
+	stroke-opacity:0.9;
+	cursor:pointer;
+}
+polygon.rectValvulaAccionAbrir
+{
+	fill:green;	
+	stroke: #DF0101;
+	stroke-width:3;
+	fill-opacity:0.5;
+	stroke-opacity:0.9;
+	cursor:pointer;
+}
+
+polygon.rectValvulaDesc
+{
+	fill: #DD2121;
+	stroke: #DF0101;
+	stroke-width:4;
+	fill-opacity:0.5;
+	stroke-opacity:0.9;
+	cursor:pointer;
+}
+.objetoDesconectado
+{
+	fill: #DDD;
+	stroke:#222;
+	stroke-width:3;
+	fill-opacity:0.5;
+	stroke-opacity:0.9;
+}
+
+circle.rectSensor:hover, circle.objetoDesconectadoc:hover, polygon.rectValvula:hover,
+ .objetoDesconectado:hover
+{
+	fill-opacity:1;
+	stroke-opacity:0.5;
+}
+
+
+/*--------------------------------------------------------*/
+
+span.spanCamposLeyenda
+{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00bfff+20,bdbdbd+47,bdbdbd+56,ff4545+79 */
+background: rgb(0,191,255); /* Old browsers */
+background: -moz-linear-gradient(-45deg,  rgba(0,191,255,1) 20%, rgba(189,189,189,1) 47%, rgba(189,189,189,1) 56%, rgba(255,69,69,1) 79%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg,  rgba(0,191,255,1) 20%,rgba(189,189,189,1) 47%,rgba(189,189,189,1) 56%,rgba(255,69,69,1) 79%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg,  rgba(0,191,255,1) 20%,rgba(189,189,189,1) 47%,rgba(189,189,189,1) 56%,rgba(255,69,69,1) 79%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00bfff', endColorstr='#ff4545',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+span.spanSensorLeyenda
+{
+	background-color: white;
+}
+span.spanValvulaLeyenda
+{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffff00+29,000000+92 */
+background: #ffff00; /* Old browsers */
+background: -moz-linear-gradient(-45deg,  #ffff00 29%, #000000 92%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg,  #ffff00 29%,#000000 92%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg,  #ffff00 29%,#000000 92%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffff00', endColorstr='#000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+
+span.spanTextoLeyenda
+{
+	background-color: black;
+}
+span.spanCamposLeyenda, span.spanSensorLeyenda, span.spanValvulaLeyenda, span.spanTextoLeyenda
+{
+	float: left;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #888;
+	border-radius: 5px;
+}
+
+
+
+/*-------Iconos dispositivos mapa 2---------------*/
+circle.dispositivoNC
+{
+	fill:red;
+}
+circle.dispositivoNR
+{
+	fill:yellow;	
+}
+circle.dispositivoNT
+{
+	fill:white;
+}
+circle.dispositivoNC, circle.dispositivoNR, circle.dispositivoNT
+{
+	stroke:black;
+	stroke-width:1;
+	fill-opacity:1;
+	stroke-opacity:1;
+}
+
+circle.dispositivoNC:hover, circle.dispositivoNR:hover, circle.dispositivoNT:hover
+{	
+	fill-opacity:0.5;
+	stroke-opacity:0.6;
+}
+
+span.spanNCLeyenda
+{
+	background-color: yellow;
+}
+span.spanNRLeyenda
+{
+	background-color: red;
+}
+span.spanNTLeyenda
+{
+	background-color: white;
+}
+span.spanNCLeyenda, span.spanNRLeyenda, span.spanNTLeyenda
+{
+	float: left;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #888;
+	border-radius: 15px;
+}

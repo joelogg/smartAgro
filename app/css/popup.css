@@ -1,0 +1,39 @@
+div#popupFondo
+{
+	position: fixed;
+	background-color: #000;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;	
+	opacity: 0.5;
+	visibility: hidden; 
+	z-index: 10;
+}
+div#popup
+{
+	position: fixed;
+	width: 0px;
+	height: auto;	
+	opacity: 0.2;
+	visibility: hidden; 
+	z-index: 11;
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	top:106px;
+}
+button#btnCerrarPopUp
+{
+	width: 30px;
+ 	height: 30px;
+ 	background-image: url("../img/cerrarPopUp.png");
+ 	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border: none;
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	right: 0;
+ }
